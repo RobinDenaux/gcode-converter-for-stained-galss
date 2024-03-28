@@ -1,5 +1,6 @@
 import styles from "./gcodeEditorStyle.module.css"
 import {useEffect} from "react";
+import {GcodeToPathsParser} from "../gcodeParsing/GcodeToPathsParser.ts";
 
 type Props = {
     setLoadedGcode: (gcode: string) => void,
@@ -22,6 +23,7 @@ export const TransformationParametersMenu = ({setLoadedGcode, loadedFileName, tr
     const clearance = 5
     const speed = 600
     const angleDiffMax = 25
+    const parser = new GcodeToPathsParser()
 
     useEffect(() => {
         if(listOfFilesToDownloadImmediatly.length === 0){
@@ -44,7 +46,7 @@ export const TransformationParametersMenu = ({setLoadedGcode, loadedFileName, tr
             "G00 X50 Y70\n" +
             "\n" +
             "G01 Z-0.125000 F100.0(Penetrate)\n" +
-            "G02 X90.851258 Y30 Z-0.125000 I-0 J-40 F400.000000\n" /*+
+            "G02 X90 Y30 Z-0.125000 I-0 J-40 F400.000000\n" /*+
             "G02 X36.086524 Y0.932940 Z-0.125000 I-33.423163 J-4.622930\n" +
             "G01 X1.144854 Y0.932930 Z-0.125000\n" +
             "G01 X1.144864 Y35.874600 Z-0.125000\n" +
@@ -79,7 +81,12 @@ export const TransformationParametersMenu = ({setLoadedGcode, loadedFileName, tr
     }
 
     const transformGcode = (gcode : string) : string => {
-
+        const parsedGcode = parser.parseGcode(gcode)
+        console.log(parsedGcode.toString())
+        setTransformedGcode(parsedGcode.toString() + "G00 Z30\n" +
+            "G00 X0 Y0\n" +
+            "M2\n")
+        return parsedGcode.toString()
 
         let currentPosition = {x:0, y:0, z:0};
         const listOfCutsToMake = [];

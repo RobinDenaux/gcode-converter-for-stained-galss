@@ -26,9 +26,9 @@ export const GcodeViewer = ({loadedGcode, transformedGcode, previewTime, setPrev
     useEffect(() => {
         setTimeout(() => {
             if(previewTime < Number.MAX_VALUE - 1000){
-                setPreviewTime((t : number) => t + 100)
+                setPreviewTime((t : number) => t + 10000/60)
             }
-        }, 1/10)
+        }, 1000/60)
     })
 
     const scaleX = (x: number) : number => {
@@ -93,8 +93,8 @@ export const GcodeViewer = ({loadedGcode, transformedGcode, previewTime, setPrev
             if(remainingTimeToRender <= 0){
                 return;
             }
-            const progress = Math.min(1, Math.max(0, remainingTimeToRender / (distance(x1, y1, x2, y2) * 100)))
-            remainingTimeToRender -= distance(x1, y1, x2, y2) * 100;
+            const progress = Math.min(1, Math.max(0, remainingTimeToRender / (distance(x1, y1, x2, y2) * 10)))
+            remainingTimeToRender -= distance(x1, y1, x2, y2) * 10;
             if(remainingTimeToRender <= 0){
                 context.lineWidth = 2
             }
@@ -114,8 +114,8 @@ export const GcodeViewer = ({loadedGcode, transformedGcode, previewTime, setPrev
             if(remainingTimeToRender <= 0){
                 return;
             }
-            const progress = Math.min(1, Math.max(0, remainingTimeToRender / (distance(0, 0, i, j) * Math.abs((Math.abs(diff1) < Math.abs(diff2) ? diff1 : diff2)) * 100)))
-            remainingTimeToRender -= distance(0, 0, i, j) * Math.abs((Math.abs(diff1) < Math.abs(diff2) ? diff1 : diff2)) * 100;
+            const progress = Math.min(1, Math.max(0, remainingTimeToRender / (distance(0, 0, i, j) * Math.abs((Math.abs(diff1) < Math.abs(diff2) ? diff1 : diff2)) * 10)))
+            remainingTimeToRender -= distance(0, 0, i, j) * Math.abs((Math.abs(diff1) < Math.abs(diff2) ? diff1 : diff2)) * 10;
             if(remainingTimeToRender <= 0){
                 context.lineWidth = 2
             }
@@ -125,10 +125,6 @@ export const GcodeViewer = ({loadedGcode, transformedGcode, previewTime, setPrev
                 newAngle -= 2*Math.PI
             }*/
             let newAngle = angle1 + (Math.abs(diff1) < Math.abs(diff2) ? diff1 : diff2) * progress
-
-            if(progress > 0 && progress < 1){
-                console.log(progress, angle1, angle2, newAngle)
-            }
 
             context.beginPath()
             context.arc(scaleX(x1 + i), scaleY(y1 + j), distance(0, 0, i, j) * scale, angle1, newAngle, anticlockwise)
@@ -248,6 +244,10 @@ export const GcodeViewer = ({loadedGcode, transformedGcode, previewTime, setPrev
         context.lineWidth = 1
         //drawGcode(loadedGcode)
         drawGcode(transformedGcode)
+
+        if(remainingTimeToRender > 0){
+            setPreviewTime(Number.MAX_VALUE)
+        }
     }
 
     window.addEventListener('resize', redraw)
