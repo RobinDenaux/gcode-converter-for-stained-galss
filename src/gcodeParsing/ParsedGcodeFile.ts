@@ -3,6 +3,7 @@ import {Path} from "./pathElements/Path.ts";
 import {Line} from "./pathElements/Line.ts";
 import {Point} from "./pathElements/Point.ts";
 import {Arc} from "./pathElements/Arc.ts";
+import {PathOptions} from "src/component/GcodeEditor.tsx";
 
 export class ParsedGcodeFile {
 
@@ -22,8 +23,8 @@ export class ParsedGcodeFile {
         this.paths.push(path);
     }
 
-    toString() {
-        return this.paths.map((path) => path.toString()).join("\n\n");
+    toString(pathOptions : PathOptions) {
+        return this.paths.map((path) => path.toString(pathOptions)).join("\n\n");
     }
 
     private parseStringToPathElement(line: string): PathElement | null {

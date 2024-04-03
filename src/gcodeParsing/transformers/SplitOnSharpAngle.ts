@@ -5,6 +5,11 @@ import {PathElement} from "../pathElements/PathElement.ts";
 
 export class SplitOnSharpAngle implements Transformer {
 
+    private _angularLimit = Math.PI / 8
+    public set angularLimit(value : number) {
+        this._angularLimit = value / 180 * Math.PI;
+    }
+
     transform(gcode : ParsedGcodeFile): ParsedGcodeFile {
         const newList : Path[] = []
         let currentPath = new Path();
@@ -22,7 +27,7 @@ export class SplitOnSharpAngle implements Transformer {
                 if(lastElement) {
                     const diff1 = Math.abs(element.startAngle() - lastElement.endAngle());
                     const diff2 = Math.abs((element.startAngle() + 2 * Math.PI) % (2 * Math.PI) - (lastElement.endAngle() + 2 * Math.PI) % (2 * Math.PI));
-                    if (Math.min(diff1, diff2) > Math.PI / 8) {
+                    if (Math.min(diff1, diff2) > this._angularLimit) {
                         pushCurrentPath();
                     }
                 }

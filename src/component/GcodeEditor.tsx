@@ -1,19 +1,39 @@
-import {TransformationParametersMenu} from "./TransformationParametersMenu.tsx";
+import {TransformationParametersMenu} from "./menu/TransformationParametersMenu.tsx";
 import {GcodeViewer} from "./GcodeViewer.tsx";
-import React, {useRef, useState} from "react";
+import React, {useState} from "react";
 import styles from "./gcodeEditorStyle.module.css";
+import {Point} from "src/gcodeParsing/pathElements/Point.ts";
 
 type FileParsed = {name: string, content: string}
 type ListOfFiles = FileParsed[]
+export type PathOptions = {
+    feedrate: number,
+    setFeedrate:  React.Dispatch<React.SetStateAction<number>>,
+    moveZDepth: number,
+    setMoveZDepth:  React.Dispatch<React.SetStateAction<number>>,
+    cutZDepth: number,
+    setCutZDepth:  React.Dispatch<React.SetStateAction<number>>,
+    angularPathLimit: number,
+    setAngularPathLimit:  React.Dispatch<React.SetStateAction<number>>,
+    orientationAreaPosition: Point,
+    setOrientationAreaPosition:  React.Dispatch<React.SetStateAction<Point>>,
+    orientationAreaChangeClicked: boolean,
+    setOrientationAreaChangeClicked:  React.Dispatch<React.SetStateAction<boolean>>
+}
 
 export const GcodeEditor = () => {
     const [loadedFileName, setLoadedFileName] = useState("");
     const [loadedGcode, setLoadedGcode] = useState("");
     const [transformedGcode, setTransformedGcode] = useState("");
     const [listOfFilesToDownloadImmediatly, setListOfFilesToDownloadImmediatly] = useState<ListOfFiles>( [])
-    const menu = useRef(null)
     const [previewTime, setPreviewTime] = useState(Number.MAX_VALUE)
-
+    const pathOptions : PathOptions = {} as PathOptions
+    [pathOptions.feedrate, pathOptions.setFeedrate] = useState(500);
+    [pathOptions.moveZDepth, pathOptions.setMoveZDepth] = useState(5);
+    [pathOptions.cutZDepth, pathOptions.setCutZDepth] = useState(0);
+    [pathOptions.angularPathLimit, pathOptions.setAngularPathLimit] = useState(15);
+    [pathOptions.orientationAreaChangeClicked, pathOptions.setOrientationAreaChangeClicked] = useState(false);
+    [pathOptions.orientationAreaPosition, pathOptions.setOrientationAreaPosition] = useState(new Point(2.5, 2.5, true));
     function dropHandler(ev : React.DragEvent<HTMLDivElement>) {
         ev.preventDefault();
         if(!ev.dataTransfer) {
@@ -74,7 +94,8 @@ export const GcodeEditor = () => {
             <GcodeViewer loadedGcode={loadedGcode}
                          transformedGcode={transformedGcode}
                          previewTime={previewTime}
-                         setPreviewTime={setPreviewTime}/>
+                         setPreviewTime={setPreviewTime}
+                         pathOptions={pathOptions}/>
             <TransformationParametersMenu listOfFilesToDownloadImmediatly={listOfFilesToDownloadImmediatly}
                                           setListOfFilesToDownloadImmediatly={setListOfFilesToDownloadImmediatly}
                                           loadedGcode={loadedGcode}
@@ -83,7 +104,8 @@ export const GcodeEditor = () => {
                                           setLoadedFileName={setLoadedFileName}
                                           transformedGcode={transformedGcode}
                                           setTransformedGcode={setTransformedGcode}
-                                          setPreviewTime={setPreviewTime}/>
+                                          setPreviewTime={setPreviewTime}
+                                          pathOptions={pathOptions}/>
         </div>
     );
 };

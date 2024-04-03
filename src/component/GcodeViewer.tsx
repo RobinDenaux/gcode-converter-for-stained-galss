@@ -1,22 +1,30 @@
 import styles from "./gcodeEditorStyle.module.css";
-import {useEffect, useRef} from "react";
+import React, {useEffect, useRef} from "react";
+import {PathOptions} from "src/component/GcodeEditor.tsx";
+import {Point} from "src/gcodeParsing/pathElements/Point.ts";
 
 type Props = {
     loadedGcode: string,
     transformedGcode: string,
     previewTime: number,
-    setPreviewTime: (time: any) => void
+    setPreviewTime: React.Dispatch<React.SetStateAction<number>>,
+    pathOptions: PathOptions
 
 }
 
-export const GcodeViewer = ({loadedGcode, transformedGcode, previewTime, setPreviewTime} : Props) => {
+export const GcodeViewer = ({loadedGcode, transformedGcode, previewTime, setPreviewTime, pathOptions} : Props) => {
     const canvas = useRef<HTMLCanvasElement>(null)
-    const error = ""
-    let minX = 0, minY = 0, maxX = 0, maxY = 0;
-    let canvasWidth = 0;
-    let canvasHeight = 0;
-    let offsetX = 0, offsetY = 0;
-    let scale = 1;
+    const error = useRef("")
+    const minX = useRef(0),
+        minY = useRef(0),
+        maxX = useRef(0),
+        maxY = useRef(0);
+    const canvasWidth = useRef(0);
+    const canvasHeight = useRef(0);
+    const offsetX = useRef(0),
+        offsetY = useRef(0);
+    const scale = useRef(1);
+
 
 
     useEffect(() => {
@@ -26,17 +34,21 @@ export const GcodeViewer = ({loadedGcode, transformedGcode, previewTime, setPrev
     useEffect(() => {
         setTimeout(() => {
             if(previewTime < Number.MAX_VALUE - 1000){
-                setPreviewTime((t : number) => t + 10000/60)
+                setPreviewTime((t : number) => t + 1000/60)
             }
         }, 1000/60)
     })
 
+    useEffect(() => {
+
+    }, [pathOptions.orientationAreaChangeClicked]);
+
     const scaleX = (x: number) : number => {
-        return (x - minX) * scale + offsetX
+        return (x - minX.current) * scale.current + offsetX.current
     }
 
     const scaleY = (y: number) : number => {
-        return canvasHeight - ((y - minY) * scale + offsetY)
+        return canvasHeight.current - ((y - minY.current) * scale.current + offsetY.current)
     }
 
     const extractAxis = (args: string[], axis: string, current : number | undefined): number | undefined => {
@@ -50,25 +62,30 @@ export const GcodeViewer = ({loadedGcode, transformedGcode, previewTime, setPrev
 
     const recalculateLimits = (gcode: string) => {
         let isDown = false;
+        maxX.current = 0
+        maxY.current = 0
+        minX.current = 0
+        minY.current = 0
 
         gcode.split("\n").forEach((line) => {
             const args = line.split(" ")
 
             if (args[0] === "G0" || args[0] === "G00" || args[0] === "G1" || args[0] === "G01" || args[0] === "G2" || args[0] === "G02" || args[0] === "G3" || args[0] === "G03") {
-                const x = extractAxis(args, 'X', minX)!
-                const y = extractAxis(args, 'Y', minY)!
+                const x = extractAxis(args, 'X', minX.current)!
+                const y = extractAxis(args, 'Y', minY.current)!
                 const z = extractAxis(args, 'Z', 0)!
 
                 isDown = z <= 0;
 
                 if(isDown) {
-                    minX = Math.min(minX, x)
-                    minY = Math.min(minY, y)
-                    maxX = Math.max(maxX, x)
-                    maxY = Math.max(maxY, y)
+                    minX.current = Math.min(minX.current, x)
+                    minY.current = Math.min(minY.current, y)
+                    maxX.current = Math.max(maxX.current, x)
+                    maxY.current = Math.max(maxY.current, y)
                 }
             }
         })
+
     }
 
     const redraw = () => {
@@ -78,8 +95,8 @@ export const GcodeViewer = ({loadedGcode, transformedGcode, previewTime, setPrev
 
         canvas.current.width = canvas.current.clientWidth;
         canvas.current.height = canvas.current.clientHeight;
-        canvasWidth = canvas.current.width;
-        canvasHeight = canvas.current.height;
+        canvasWidth.current = canvas.current.width;
+        canvasHeight.current = canvas.current.height;
         const context = canvas.current.getContext('2d')
         const width = canvas.current.width;
         const height = canvas.current.height;
@@ -109,8 +126,8 @@ export const GcodeViewer = ({loadedGcode, transformedGcode, previewTime, setPrev
         const drawArc = (x1: number, y1: number, x2: number, y2: number, i: number, j: number, anticlockwise: boolean) => {
             const angle1 = -Math.atan2(-j, -i)
             const angle2 = -Math.atan2(y2 - y1 - j, x2- x1 - i)
-            let diff1 = ((angle2 + 2*Math.PI)%(2*Math.PI) - (angle1 + 2*Math.PI)%(2*Math.PI))
-            let diff2 = angle2 - angle1
+            const diff1 = ((angle2 + 2*Math.PI)%(2*Math.PI) - (angle1 + 2*Math.PI)%(2*Math.PI))
+            const diff2 = angle2 - angle1
             if(remainingTimeToRender <= 0){
                 return;
             }
@@ -120,14 +137,10 @@ export const GcodeViewer = ({loadedGcode, transformedGcode, previewTime, setPrev
                 context.lineWidth = 2
             }
 
-            /*let newAngle = angle1 + ((angle2 + 2*Math.PI)%(2*Math.PI) - (angle1 + 2*Math.PI)%(2*Math.PI)) * progress
-            if(newAngle > Math.PI){
-                newAngle -= 2*Math.PI
-            }*/
-            let newAngle = angle1 + (Math.abs(diff1) < Math.abs(diff2) ? diff1 : diff2) * progress
+            const newAngle = angle1 + (Math.abs(diff1) < Math.abs(diff2) ? diff1 : diff2) * progress
 
             context.beginPath()
-            context.arc(scaleX(x1 + i), scaleY(y1 + j), distance(0, 0, i, j) * scale, angle1, newAngle, anticlockwise)
+            context.arc(scaleX(x1 + i), scaleY(y1 + j), distance(0, 0, i, j) * scale.current, angle1, newAngle, anticlockwise)
             context.stroke();
 
         }
@@ -216,20 +229,16 @@ export const GcodeViewer = ({loadedGcode, transformedGcode, previewTime, setPrev
             })
         }
 
-        maxX = 0
-        maxY = 0
-        minX = 0
-        minY = 0
-        recalculateLimits(loadedGcode)
         recalculateLimits(transformedGcode)
-        minX -= (maxX - minX) * 0.1
-        minY -= (maxY - minY) * 0.1
-        maxX += (maxX - minX) * 0.1
-        maxY += (maxY - minY) * 0.1
 
-        scale = Math.min(canvasWidth / (maxX - minX), canvasHeight / (maxY - minY))
-        offsetX = (canvasWidth - (maxX - minX) * scale) / 2
-        offsetY = (canvasHeight - (maxY - minY) * scale) / 2
+        const borderOnX = (maxX.current - minX.current) * 0.1
+        const borderOnY = (maxY.current - minY.current) * 0.1
+
+        scale.current = Math.min(canvasWidth.current / (maxX.current - minX.current + 2*borderOnX),
+            canvasHeight.current / (maxY.current - minY.current + 2*borderOnY))
+
+        offsetX.current = (canvasWidth.current - (maxX.current - minX.current) * scale.current) / 2
+        offsetY.current = (canvasHeight.current - (maxY.current - minY.current) * scale.current) / 2
 
         context.clearRect(0, 0, width, height);
 
@@ -242,7 +251,6 @@ export const GcodeViewer = ({loadedGcode, transformedGcode, previewTime, setPrev
         drawLine(0, 0, 0, 10)
 
         context.lineWidth = 1
-        //drawGcode(loadedGcode)
         drawGcode(transformedGcode)
 
         if(remainingTimeToRender > 0){
@@ -250,12 +258,31 @@ export const GcodeViewer = ({loadedGcode, transformedGcode, previewTime, setPrev
         }
     }
 
-    window.addEventListener('resize', redraw)
+    const onCanvasClick = (e: React.MouseEvent<HTMLCanvasElement>) => {
+        if(pathOptions.orientationAreaChangeClicked){
+            const rect = canvas.current!.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            console.log(x, y, scale)
+            pathOptions.setOrientationAreaPosition(new Point((x - offsetX.current) / scale.current,
+                (canvasHeight.current - y - offsetY.current) / scale.current, true))
+            pathOptions.setOrientationAreaChangeClicked(false)
+        }
+    }
+
+    recalculateLimits(loadedGcode)
+    useEffect(() => {
+        window.addEventListener('resize', redraw)
+    }, []);
 
     return (
-        <div className={styles.gcodeViewerPanel}>
-            <p style={{color:'red', margin: 0}}>{error}</p>
-            <canvas ref={canvas} style={{height: '100%', width: '100%'}}></canvas>
+        <div className={styles.gcodeViewerPanel} style={{cursor: pathOptions.orientationAreaChangeClicked ? "pointer" : "default"}}>
+            <p style={{color:'red', margin: 0}}>{error.current}</p>
+            <canvas ref={canvas} style={{height: '100%', width: '100%'}} onClick={onCanvasClick}></canvas>
+            <p className={styles.viewerCoordinatesLimits}>
+                x: {minX.current.toFixed(2)}mm .. {maxX.current.toFixed(2)}mm<br/>
+                y: {minY.current.toFixed(2)}mm .. {maxY.current.toFixed(2)}mm
+            </p>
         </div>
     );
 };

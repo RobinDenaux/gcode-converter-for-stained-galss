@@ -7,10 +7,23 @@ import {Arc} from "../pathElements/Arc.ts";
 
 export class AddToolTransition implements Transformer {
 
+    toolOrientationChangeAreaPosition = new Point(2.5, 2.5, true);
+    private _angularLimit = Math.PI / 8
+    public set angularLimit(value : number) {
+        this._angularLimit = value / 180 * Math.PI;
+    }
+
     transform(gcode: ParsedGcodeFile): ParsedGcodeFile {
         let lastPosition = new Point(0, 0, false);
         let lastAngle : number | undefined = undefined;
         let i = 0
+
+        gcode.paths.forEach((path, index, array) => {
+            const reversePath = path.createReversePath();
+            reversePath.reversePath = path;
+            path.reversePath = reversePath;
+            array.push(reversePath)
+        })
 
         const newList: Path[] = []
         while(gcode.paths.length > 0) {
@@ -23,18 +36,21 @@ export class AddToolTransition implements Transformer {
                 path = gcode.paths.find(p => {
                     const diff1 = Math.abs(p.elements[0].startAngle() - lastAngle!);
                     const diff2 = Math.abs((p.elements[0].startAngle() + 2 * Math.PI) % (2 * Math.PI) - (lastAngle! + 2 * Math.PI) % (2 * Math.PI));
-                    return Math.min(diff1, diff2) < Math.PI / 8
+                    return Math.min(diff1, diff2) < Math.max(1 / 180 * Math.PI, this._angularLimit)
                 })
             }
             if(!path) {
                 path = gcode.paths.shift() as Path;
                 conserveToolRotation = false
+                if(path.reversePath){
+                    gcode.paths = gcode.paths.filter(p => p !== path!.reversePath)
+                }
             } else {
-                gcode.paths = gcode.paths.filter(p => p !== path)
+                gcode.paths = gcode.paths.filter(p => p !== path && p !== path!.reversePath)
             }
 
             i++
-            if(i > 20000) {
+            if(i > 300000) {
                 path.elements = []
                 break
             }
@@ -51,14 +67,16 @@ export class AddToolTransition implements Transformer {
                         lastAngle -= 2 * Math.PI;
                     }
                 }
-                const lastAngleRotationPoint = new Point(2.5 + Math.cos(lastAngle-Math.PI/2) * 2.5, 2.5 + Math.sin(lastAngle-Math.PI/2) * 2.5, false);
+                const lastAngleRotationPoint = new Point(this.toolOrientationChangeAreaPosition.x + Math.cos(lastAngle-Math.PI/2) * 2.5,
+                    this.toolOrientationChangeAreaPosition.y + Math.sin(lastAngle-Math.PI/2) * 2.5, false);
                 const lastAngleRotationPointDown = new Point(lastAngleRotationPoint.x, lastAngleRotationPoint.y, true)
                 const goToStart = new Line("G00", lastPosition, lastAngleRotationPoint);
                 const goToStartDown = new Line("G01", lastAngleRotationPoint, lastAngleRotationPointDown);
 
-                const currentAngleRotationPoint = new Point(2.5 + Math.cos(pathStartingAngle-Math.PI/2) * 2.5, 2.5 + Math.sin(pathStartingAngle-Math.PI/2) * 2.5, false);
+                const currentAngleRotationPoint = new Point(this.toolOrientationChangeAreaPosition.x + Math.cos(pathStartingAngle-Math.PI/2) * 2.5,
+                    this.toolOrientationChangeAreaPosition.y + Math.sin(pathStartingAngle-Math.PI/2) * 2.5, false);
                 const currentAngleRotationPointDown = new Point(currentAngleRotationPoint.x, currentAngleRotationPoint.y, true);
-                const makeRotation = new Arc("G03", lastAngleRotationPoint, currentAngleRotationPointDown, new Point(2.5, 2.5, true));
+                const makeRotation = new Arc("G03", lastAngleRotationPoint, currentAngleRotationPointDown, new Point(this.toolOrientationChangeAreaPosition.x, this.toolOrientationChangeAreaPosition.y, true));
                 const goToEndUp = new Line("G01", currentAngleRotationPointDown, currentAngleRotationPoint);
 
                 path.elements = [goToStart, goToStartDown, makeRotation, goToEndUp, ...path.elements]

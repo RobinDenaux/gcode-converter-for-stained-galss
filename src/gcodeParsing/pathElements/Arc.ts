@@ -1,5 +1,6 @@
 import {Point} from "./Point.ts";
 import {PathElement} from "./PathElement.ts";
+import {PathOptions} from "src/component/GcodeEditor.tsx";
 
 export class Arc implements PathElement {
 
@@ -41,7 +42,11 @@ export class Arc implements PathElement {
         return this.p2;
     }
 
-    toString(): string {
-        return `${this.type} X${this.p2.x} Y${this.p2.y} I${this.center.x - this.p1.x} J${this.center.y - this.p1.y}`;
+    toString(pathOptions : PathOptions): string {
+        return `${this.type} X${this.p2.x} Y${this.p2.y} I${this.center.x - this.p1.x} J${this.center.y - this.p1.y} F${pathOptions.feedrate}`
+    }
+
+    createReversePathElement(): PathElement {
+        return new Arc(this.type === "G02" ? "G03" : "G02", this.p2, this.p1, this.center);
     }
 }

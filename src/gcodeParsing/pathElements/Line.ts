@@ -1,5 +1,6 @@
 import {PathElement} from "./PathElement.ts";
 import {Point} from "./Point.ts";
+import {PathOptions} from "src/component/GcodeEditor.tsx";
 
 export class Line implements PathElement {
 
@@ -32,7 +33,18 @@ export class Line implements PathElement {
         return this.p2;
     }
 
-    toString(): string {
-        return `${this.type} X${this.p2.x} Y${this.p2.y} Z${this.p2.down ? -1 : 5}`;
+    toString(pathOptions : PathOptions): string {
+        let feedrate = pathOptions.feedrate
+        if(this.type === "G00") {
+            feedrate = 1000
+        }
+        else if(this.p1.down !== this.p2.down) {
+            feedrate = 200
+        }
+        return `${this.type} X${this.p2.x} Y${this.p2.y} Z${this.p2.down ? pathOptions.cutZDepth : pathOptions.moveZDepth} F${feedrate}`;
+    }
+
+    createReversePathElement(): PathElement {
+        return new Line(this.type, this.p2, this.p1);
     }
 }

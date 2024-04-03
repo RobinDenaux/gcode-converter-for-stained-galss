@@ -1,4 +1,5 @@
 import {Point} from "./Point.ts";
+import {PathOptions} from "src/component/GcodeEditor.tsx";
 
 export interface PathElement {
 
@@ -11,5 +12,7 @@ export interface PathElement {
     endPoint(): Point;
     type: string;
 
-    toString(): string;
+    toString(pathOptions : PathOptions): string;
+
+    createReversePathElement(): PathElement;
 }
