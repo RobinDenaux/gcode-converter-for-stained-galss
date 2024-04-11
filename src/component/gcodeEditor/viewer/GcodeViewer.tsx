@@ -1,5 +1,5 @@
 import styles from "src/component/gcodeEditor/gcodeEditorStyle.module.css";
-import React, {useEffect, useRef} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {PathOptions} from "src/component/gcodeEditor/GcodeEditor.tsx";
 import {Point} from "src/gcodeParsing/pathElements/Point.ts";
 
@@ -24,12 +24,13 @@ export const GcodeViewer = ({loadedGcode, transformedGcode, previewTime, setPrev
     const offsetX = useRef(0),
         offsetY = useRef(0);
     const scale = useRef(1);
+    const [resized, setResized] = useState(false)
 
 
 
     useEffect(() => {
         redraw()
-    }, [loadedGcode, transformedGcode, previewTime])
+    }, [loadedGcode, transformedGcode, previewTime, resized])
 
     useEffect(() => {
         setTimeout(() => {
@@ -40,8 +41,10 @@ export const GcodeViewer = ({loadedGcode, transformedGcode, previewTime, setPrev
     })
 
     useEffect(() => {
-
-    }, [pathOptions.orientationAreaChangeClicked]);
+        window.addEventListener('resize', () => {
+            setResized(resized => !resized)
+        })
+    }, []);
 
     const scaleX = (x: number) : number => {
         return (x - minX.current) * scale.current + offsetX.current
@@ -271,9 +274,6 @@ export const GcodeViewer = ({loadedGcode, transformedGcode, previewTime, setPrev
     }
 
     recalculateLimits(loadedGcode)
-    useEffect(() => {
-        window.addEventListener('resize', redraw)
-    }, []);
 
     return (
         <div className={styles.gcodeViewerPanel} style={{cursor: pathOptions.orientationAreaChangeClicked ? "pointer" : "default"}}>

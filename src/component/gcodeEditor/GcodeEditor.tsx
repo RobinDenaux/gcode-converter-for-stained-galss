@@ -34,6 +34,7 @@ export const GcodeEditor = () => {
     [pathOptions.angularPathLimit, pathOptions.setAngularPathLimit] = useState(15);
     [pathOptions.orientationAreaChangeClicked, pathOptions.setOrientationAreaChangeClicked] = useState(false);
     [pathOptions.orientationAreaPosition, pathOptions.setOrientationAreaPosition] = useState(new Point(2.5, 2.5, true));
+
     function dropHandler(ev : React.DragEvent<HTMLDivElement>) {
         ev.preventDefault();
         if(!ev.dataTransfer) {
@@ -41,17 +42,16 @@ export const GcodeEditor = () => {
         }
 
         if (ev.dataTransfer.items) {
-            // Use DataTransferItemList interface to access the file(s)
             const items = [...ev.dataTransfer.items]
-            parseFiles(items
+            handleFiles(items
                 .map((item) => item.getAsFile())
                 .filter((file) => file !== null) as File[])
         } else {
-            parseFiles([...ev.dataTransfer.files])
+            handleFiles([...ev.dataTransfer.files])
         }
     }
 
-    const parseFiles = (files: File[]) => {
+    const handleFiles = (files: File[]) => {
         files.forEach((file) => {
             readFile(file).then((fileParsed: FileParsed) => {
                 if (files.length === 1) {
