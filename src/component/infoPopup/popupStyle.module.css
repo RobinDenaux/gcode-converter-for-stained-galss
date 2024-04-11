@@ -1,0 +1,45 @@
+.background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 100;
+}
+
+.popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 70%;
+    height: fit-content;
+    padding: 3em;
+    background-color: white;
+    z-index: 101;
+    border-radius: 1em;
+    box-shadow: #555 2px 2px 10px;
+}
+
+.popup > h3:first-of-type {
+    margin-top: 0;
+}
+
+.popup h3 {
+    margin-bottom: 0;
+    margin-top: 2em;
+}
+
+.popup p {
+    text-align: justify;
+}
+
+.close {
+    position: absolute;
+    top: 0;
+    right: 0;
+    font-size: 1.5em;
+    padding-right: 0.5em;
+    cursor: pointer;
+}
