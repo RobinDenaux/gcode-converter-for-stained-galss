@@ -266,7 +266,7 @@ export const GcodeViewer = ({loadedGcode, transformedGcode, previewTime, setPrev
             const rect = canvas.current!.getBoundingClientRect();
             const x = e.clientX - rect.left;
             const y = e.clientY - rect.top;
-            console.log(x, y, scale)
+
             pathOptions.setOrientationAreaPosition(new Point((x - offsetX.current) / scale.current,
                 (canvasHeight.current - y - offsetY.current) / scale.current, true))
             pathOptions.setOrientationAreaChangeClicked(false)

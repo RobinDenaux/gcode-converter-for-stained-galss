@@ -1,5 +1,5 @@
 import {Transformer} from "./Transformer.ts";
-import {ParsedGcodeFile} from "../ParsedGcodeFile.ts";
+import {ParsedGcodeFile} from "../parsing/ParsedGcodeFile.ts";
 
 export class RemoveDuplicates implements Transformer {
 

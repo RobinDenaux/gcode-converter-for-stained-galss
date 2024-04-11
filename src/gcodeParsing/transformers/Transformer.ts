@@ -1,4 +1,4 @@
-import {ParsedGcodeFile} from "../ParsedGcodeFile.ts";
+import {ParsedGcodeFile} from "../parsing/ParsedGcodeFile.ts";
 
 export interface Transformer {
 

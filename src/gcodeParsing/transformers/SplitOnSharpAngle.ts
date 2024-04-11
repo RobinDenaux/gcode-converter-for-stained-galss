@@ -1,4 +1,4 @@
-import {ParsedGcodeFile} from "../ParsedGcodeFile.ts";
+import {ParsedGcodeFile} from "../parsing/ParsedGcodeFile.ts";
 import {Path} from "../pathElements/Path.ts";
 import {Transformer} from "./Transformer.ts";
 import {PathElement} from "../pathElements/PathElement.ts";
