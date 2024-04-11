@@ -16,7 +16,7 @@ export class SplitOnToolUp implements Transformer {
 
         gcode.paths.forEach((path) => {
             path.elements.forEach((element) => {
-                if(!element.endPoint().down || !element.startPoint().down){
+                if(element.endPoint.isUp || element.startPoint.isUp){
                     pushCurrentPath();
                 } else {
                     currentPath.elements.push(element);

@@ -1,4 +1,4 @@
-import styles from "src/component/gcodeEditorStyle.module.css";
+import styles from "src/component/gcodeEditor/gcodeEditorStyle.module.css";
 
 export const MenuSectionErode = () => {
     return (

@@ -1,5 +1,5 @@
 import {TransformationParametersMenu} from "./menu/TransformationParametersMenu.tsx";
-import {GcodeViewer} from "./GcodeViewer.tsx";
+import {GcodeViewer} from "./viewer/GcodeViewer.tsx";
 import React, {useState} from "react";
 import styles from "./gcodeEditorStyle.module.css";
 import {Point} from "src/gcodeParsing/pathElements/Point.ts";
@@ -25,7 +25,7 @@ export const GcodeEditor = () => {
     const [loadedFileName, setLoadedFileName] = useState("");
     const [loadedGcode, setLoadedGcode] = useState("");
     const [transformedGcode, setTransformedGcode] = useState("");
-    const [listOfFilesToDownloadImmediatly, setListOfFilesToDownloadImmediatly] = useState<ListOfFiles>( [])
+    const [listOfFilesToDownloadImmediately, setListOfFilesToDownloadImmediately] = useState<ListOfFiles>( [])
     const [previewTime, setPreviewTime] = useState(Number.MAX_VALUE)
     const pathOptions : PathOptions = {} as PathOptions
     [pathOptions.feedrate, pathOptions.setFeedrate] = useState(500);
@@ -58,7 +58,7 @@ export const GcodeEditor = () => {
                     setLoadedGcode(fileParsed.content)
                     setLoadedFileName(fileParsed.name)
                 } else {
-                    setListOfFilesToDownloadImmediatly([...listOfFilesToDownloadImmediatly, {
+                    setListOfFilesToDownloadImmediately([...listOfFilesToDownloadImmediately, {
                         name: fileParsed.name,
                         content: fileParsed.content
                     }])
@@ -96,8 +96,8 @@ export const GcodeEditor = () => {
                          previewTime={previewTime}
                          setPreviewTime={setPreviewTime}
                          pathOptions={pathOptions}/>
-            <TransformationParametersMenu listOfFilesToDownloadImmediatly={listOfFilesToDownloadImmediatly}
-                                          setListOfFilesToDownloadImmediatly={setListOfFilesToDownloadImmediatly}
+            <TransformationParametersMenu listOfFilesToDownloadImmediately={listOfFilesToDownloadImmediately}
+                                          setListOfFilesToDownloadImmediately={setListOfFilesToDownloadImmediately}
                                           loadedGcode={loadedGcode}
                                           setLoadedGcode={setLoadedGcode}
                                           loadedFileName={loadedFileName}

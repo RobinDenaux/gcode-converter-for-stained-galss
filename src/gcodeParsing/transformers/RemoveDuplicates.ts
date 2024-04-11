@@ -6,10 +6,8 @@ export class RemoveDuplicates implements Transformer {
     transform(gcode: ParsedGcodeFile): ParsedGcodeFile {
         gcode.paths.forEach((path) => {
             path.elements.forEach((element, index, object) => {
-                if(gcode.paths.find((path) => path !== path && path.elements.find(e => element.startPoint().x == e.startPoint().x
-                                                                                                        && element.startPoint().y == e.startPoint().y
-                                                                                                        && element.endPoint().x == e.endPoint().x
-                                                                                                        && element.endPoint().y == e.endPoint().y
+                if(gcode.paths.find((path) => path !== path && path.elements.find(e => element.startPoint.equals(e.startPoint)
+                                                                                                        && element.endPoint.equals(e.endPoint)
                                                                                                         && element.type == e.type))) {
                     object.splice(index, 1)
                 }

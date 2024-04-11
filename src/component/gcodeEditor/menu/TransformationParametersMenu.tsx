@@ -1,19 +1,19 @@
-import styles from "src/component/gcodeEditorStyle.module.css"
+import styles from "src/component/gcodeEditor/gcodeEditorStyle.module.css"
 import {useEffect} from "react";
 import testFile from "src/gcodeParsing/testFiles/output_0010.ngc?raw"
 import {MenuSectionErode} from "./sections/MenuSectionErode.tsx";
 import {MenuSectionPathOptions} from "./sections/MenuSectionPathOptions.tsx";
 import {MenuSectionFileSaving} from "./sections/MenuSectionFileSaving.tsx";
-import {GcodeToPathsParser} from "src/gcodeParsing/GcodeToPathsParser.ts";
-import {PathOptions} from "src/component/GcodeEditor.tsx";
+import {GcodeTransformationStack} from "src/gcodeParsing/parsing/GcodeTransformationStack.ts";
+import {PathOptions} from "src/component/gcodeEditor/GcodeEditor.tsx";
 
 type Props = {
     setLoadedGcode: (gcode: string) => void,
     loadedFileName: string,
     transformedGcode: string,
     setLoadedFileName: (fileName: string) => void,
-    listOfFilesToDownloadImmediatly: { name: string, content: string}[],
-    setListOfFilesToDownloadImmediatly: (files: {name: string, content: string}[]) => void,
+    listOfFilesToDownloadImmediately: { name: string, content: string}[],
+    setListOfFilesToDownloadImmediately: (files: {name: string, content: string}[]) => void,
     setTransformedGcode: (gcode: string) => void,
     loadedGcode: string,
     setPreviewTime: (time: number) => void,
@@ -22,22 +22,22 @@ type Props = {
 
 
 export const TransformationParametersMenu = ({setLoadedGcode, loadedFileName, transformedGcode,
-                                                 setLoadedFileName, listOfFilesToDownloadImmediatly, setListOfFilesToDownloadImmediatly,
+                                                 setLoadedFileName, listOfFilesToDownloadImmediately, setListOfFilesToDownloadImmediately,
                                                  setTransformedGcode, loadedGcode, setPreviewTime, pathOptions} : Props) => {
 
-    const parser = new GcodeToPathsParser()
+    const parser = new GcodeTransformationStack()
 
     useEffect(() => {
-        if(listOfFilesToDownloadImmediatly.length === 0){
+        if(listOfFilesToDownloadImmediately.length === 0){
             return;
         }
 
-        listOfFilesToDownloadImmediatly.forEach((file) => {
+        listOfFilesToDownloadImmediately.forEach((file) => {
             transformAndDownloadFile(file.content, file.name)
         })
 
-       setListOfFilesToDownloadImmediatly([])
-    }, [listOfFilesToDownloadImmediatly.length])
+       setListOfFilesToDownloadImmediately([])
+    }, [listOfFilesToDownloadImmediately])
 
     const transformAndDownloadFile = (gcode: string, fileName: string) => {
         const transformed = transformGcode(gcode)
@@ -63,7 +63,7 @@ export const TransformationParametersMenu = ({setLoadedGcode, loadedFileName, tr
             "G00 X0 Y0\n" +
             "M2\n"
         console.log({"Parsed gcode" :parsedGcode.toString()})
-        return parsedGcode.toString(pathOptions)
+        return parsedGcode
     }
 
     useEffect(() => {

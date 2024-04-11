@@ -1,6 +1,6 @@
-import styles from "./gcodeEditorStyle.module.css";
+import styles from "src/component/gcodeEditor/gcodeEditorStyle.module.css";
 import React, {useEffect, useRef} from "react";
-import {PathOptions} from "src/component/GcodeEditor.tsx";
+import {PathOptions} from "src/component/gcodeEditor/GcodeEditor.tsx";
 import {Point} from "src/gcodeParsing/pathElements/Point.ts";
 
 type Props = {

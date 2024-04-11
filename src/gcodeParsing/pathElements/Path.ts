@@ -1,5 +1,5 @@
 import {PathElement} from "./PathElement.ts";
-import {PathOptions} from "src/component/GcodeEditor.tsx";
+import {PathOptions} from "src/component/gcodeEditor/GcodeEditor.tsx";
 
 export class Path {
 

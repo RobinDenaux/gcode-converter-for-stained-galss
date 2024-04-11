@@ -1,5 +1,5 @@
 import {Point} from "./Point.ts";
-import {PathOptions} from "src/component/GcodeEditor.tsx";
+import {PathOptions} from "src/component/gcodeEditor/GcodeEditor.tsx";
 
 export interface PathElement {
 
@@ -8,9 +8,9 @@ export interface PathElement {
     startAngle(): number;
     endAngle(): number;
 
-    startPoint(): Point;
-    endPoint(): Point;
-    type: string;
+    startPoint: Point;
+    endPoint: Point;
+    type: "G00" | "G01" | "G02" | "G03";
 
     toString(pathOptions : PathOptions): string;
 

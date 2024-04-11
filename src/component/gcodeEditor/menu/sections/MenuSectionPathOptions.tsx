@@ -1,5 +1,5 @@
-import styles from "src/component/gcodeEditorStyle.module.css";
-import {PathOptions} from "src/component/GcodeEditor.tsx";
+import styles from "src/component/gcodeEditor/gcodeEditorStyle.module.css";
+import {PathOptions} from "src/component/gcodeEditor/GcodeEditor.tsx";
 
 type Props = {
     pathOptions: PathOptions

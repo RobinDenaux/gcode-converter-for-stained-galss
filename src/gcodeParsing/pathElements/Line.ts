@@ -1,22 +1,22 @@
 import {PathElement} from "./PathElement.ts";
 import {Point} from "./Point.ts";
-import {PathOptions} from "src/component/GcodeEditor.tsx";
+import {PathOptions} from "src/component/gcodeEditor/GcodeEditor.tsx";
 
 export class Line implements PathElement {
 
     type : "G00" | "G01";
-    p1 : Point;
-    p2 : Point;
+    startPoint : Point;
+    endPoint : Point;
     angle : number;
 
     constructor(type : "G00" | "G01", startPoint : Point, endPoint : Point) {
-        this.p1 = startPoint;
-        this.p2 = endPoint;
+        this.startPoint = startPoint;
+        this.endPoint = endPoint;
         this.type = type;
-        this.angle = Math.atan2(this.p2.y - this.p1.y, this.p2.x - this.p1.x);
+        this.angle = Math.atan2(this.endPoint.y - this.startPoint.y, this.endPoint.x - this.startPoint.x);
     }
     length() {
-        return this.p1.distanceTo(this.p2);
+        return this.startPoint.distanceTo(this.endPoint);
     }
     startAngle() {
         return this.angle
@@ -25,26 +25,18 @@ export class Line implements PathElement {
         return this.startAngle()
     }
 
-    startPoint(): Point {
-        return this.p1;
-    }
-
-    endPoint(): Point {
-        return this.p2;
-    }
-
     toString(pathOptions : PathOptions): string {
         let feedrate = pathOptions.feedrate
         if(this.type === "G00") {
             feedrate = 1000
         }
-        else if(this.p1.down !== this.p2.down) {
+        else if(this.startPoint.isDown !== this.endPoint.isDown) {
             feedrate = 200
         }
-        return `${this.type} X${this.p2.x} Y${this.p2.y} Z${this.p2.down ? pathOptions.cutZDepth : pathOptions.moveZDepth} F${feedrate}`;
+        return `${this.type} X${this.endPoint.x} Y${this.endPoint.y} Z${this.endPoint.isDown ? pathOptions.cutZDepth : pathOptions.moveZDepth} F${feedrate}`;
     }
 
     createReversePathElement(): PathElement {
-        return new Line(this.type, this.p2, this.p1);
+        return new Line(this.type, this.endPoint, this.startPoint);
     }
 }

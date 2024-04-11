@@ -1,6 +1,6 @@
 
 import './App.css'
-import {GcodeEditor} from "./component/GcodeEditor.tsx";
+import {GcodeEditor} from "./component/gcodeEditor/GcodeEditor.tsx";
 
 function App() {
 

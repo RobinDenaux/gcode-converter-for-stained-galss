@@ -18,7 +18,7 @@ export class AddToolTransition implements Transformer {
         let lastAngle : number | undefined = undefined;
         let i = 0
 
-        gcode.paths.forEach((path, index, array) => {
+        gcode.paths.forEach((path, _, array) => {
             const reversePath = path.createReversePath();
             reversePath.reversePath = path;
             path.reversePath = reversePath;
@@ -30,7 +30,7 @@ export class AddToolTransition implements Transformer {
             let path : Path | undefined = undefined
             let conserveToolRotation = true
             gcode.paths.sort((a, b) => {
-                return a.elements[0].startPoint().distanceTo(lastPosition) - b.elements[0].startPoint().distanceTo(lastPosition)
+                return a.elements[0].startPoint.distanceTo(lastPosition) - b.elements[0].startPoint.distanceTo(lastPosition)
             })
             if(lastAngle !== undefined) {
                 path = gcode.paths.find(p => {
@@ -55,7 +55,7 @@ export class AddToolTransition implements Transformer {
                 break
             }
 
-            lastPosition = path.elements[path.elements.length - 1].endPoint();
+            lastPosition = path.elements[path.elements.length - 1].endPoint;
             const pathStartingAngle = path.elements[0].startAngle();
 
             this.addUpAndDownMovement(path, lastPosition)
@@ -69,13 +69,13 @@ export class AddToolTransition implements Transformer {
                 }
                 const lastAngleRotationPoint = new Point(this.toolOrientationChangeAreaPosition.x + Math.cos(lastAngle-Math.PI/2) * 2.5,
                     this.toolOrientationChangeAreaPosition.y + Math.sin(lastAngle-Math.PI/2) * 2.5, false);
-                const lastAngleRotationPointDown = new Point(lastAngleRotationPoint.x, lastAngleRotationPoint.y, true)
+                const lastAngleRotationPointDown = Point.fromPoint(lastAngleRotationPoint, true)
                 const goToStart = new Line("G00", lastPosition, lastAngleRotationPoint);
                 const goToStartDown = new Line("G01", lastAngleRotationPoint, lastAngleRotationPointDown);
 
                 const currentAngleRotationPoint = new Point(this.toolOrientationChangeAreaPosition.x + Math.cos(pathStartingAngle-Math.PI/2) * 2.5,
                     this.toolOrientationChangeAreaPosition.y + Math.sin(pathStartingAngle-Math.PI/2) * 2.5, false);
-                const currentAngleRotationPointDown = new Point(currentAngleRotationPoint.x, currentAngleRotationPoint.y, true);
+                const currentAngleRotationPointDown = Point.fromPoint(currentAngleRotationPoint, true);
                 const makeRotation = new Arc("G03", lastAngleRotationPoint, currentAngleRotationPointDown, new Point(this.toolOrientationChangeAreaPosition.x, this.toolOrientationChangeAreaPosition.y, true));
                 const goToEndUp = new Line("G01", currentAngleRotationPointDown, currentAngleRotationPoint);
 
@@ -92,10 +92,10 @@ export class AddToolTransition implements Transformer {
     }
 
     private addUpAndDownMovement(path: Path, lastPosition: Point) {
-        const startPointUp = new Point(path.elements[0].startPoint().x, path.elements[0].startPoint().y, false);
-        const startPointDown = new Point(path.elements[0].startPoint().x, path.elements[0].startPoint().y, true);
-        const endPointUp = new Point(path.elements[path.elements.length - 1].endPoint().x, path.elements[path.elements.length - 1].endPoint().y, false);
-        const endPointDown = new Point(path.elements[path.elements.length - 1].endPoint().x, path.elements[path.elements.length - 1].endPoint().y, true);
+        const startPointUp = Point.fromPoint(path.elements[0].startPoint, false);
+        const startPointDown = Point.fromPoint(path.elements[0].startPoint, true);
+        const endPointUp = Point.fromPoint(path.elements[path.elements.length - 1].endPoint, false);
+        const endPointDown = Point.fromPoint(path.elements[path.elements.length - 1].endPoint, true);
 
         const movement = new Line("G00", lastPosition, startPointUp);
         const descent = new Line("G01", startPointUp, startPointDown);
