@@ -3,7 +3,7 @@ import {Line} from "src/gcodeParsing/pathElements/Line.ts";
 import {Arc} from "src/gcodeParsing/pathElements/Arc.ts";
 import {Point} from "src/gcodeParsing/pathElements/Point.ts";
 import {Path} from "src/gcodeParsing/pathElements/Path.ts";
-import {ParsedGcodeFile} from "src/gcodeParsing/ParsedGcodeFile.ts";
+import {ParsedGcodeFile} from "src/gcodeParsing/parsing/ParsedGcodeFile.ts";
 import GcodeLineParser, {ParsedGcodeLine} from "src/gcodeParsing/parsing/GcodeLineParser.ts";
 
 export class GcodeFileParser {

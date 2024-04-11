@@ -1,4 +1,4 @@
-import {ParsedGcodeFile} from "src/gcodeParsing/ParsedGcodeFile.ts";
+import {ParsedGcodeFile} from "src/gcodeParsing/parsing/ParsedGcodeFile.ts";
 import {Transformer} from "src/gcodeParsing/transformers/Transformer.ts";
 import {SplitOnToolUp} from "src/gcodeParsing/transformers/SplitOnToolUp.ts";
 import {SplitOnSharpAngle} from "src/gcodeParsing/transformers/SplitOnSharpAngle.ts";

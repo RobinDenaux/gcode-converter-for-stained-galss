@@ -1,4 +1,4 @@
-import {Path} from "./pathElements/Path.ts";
+import {Path} from "src/gcodeParsing/pathElements/Path.ts";
 import {PathOptions} from "src/component/gcodeEditor/GcodeEditor.tsx";
 
 export class ParsedGcodeFile {

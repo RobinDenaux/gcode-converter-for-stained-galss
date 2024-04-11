@@ -30,7 +30,6 @@ export const MenuSectionPathOptions = ({pathOptions} : Props) => {
                                              style={{width: "50px", borderColor: pathOptions.feedrate < 100 ? "red" : ""}}/>mm/mn<br/>
 
             <label>Angular limit for continuous path : </label><input value={pathOptions.angularPathLimit}
-                                                                      defaultValue={0}
                                                                       onChange={e => pathOptions.setAngularPathLimit(parseFloat(e.target.value) || 0)}
                                                                       style={{width: "50px", borderColor: pathOptions.angularPathLimit > 45 ? "red" : ""}}/>°<br/>
 
