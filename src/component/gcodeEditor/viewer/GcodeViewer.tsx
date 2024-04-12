@@ -41,10 +41,15 @@ export const GcodeViewer = ({loadedGcode, transformedGcode, previewTime, setPrev
     })
 
     useEffect(() => {
-        window.addEventListener('resize', () => {
-            setResized(resized => !resized)
-        })
+        window.addEventListener('resize', onResize)
+        return () => {
+            window.removeEventListener('resize', onResize)
+        }
     }, []);
+
+    const onResize = () => {
+        setResized(resized => !resized)
+    }
 
     const scaleX = (x: number) : number => {
         return (x - minX.current) * scale.current + offsetX.current
