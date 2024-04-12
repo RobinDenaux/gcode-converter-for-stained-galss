@@ -8,21 +8,30 @@
     z-index: 100;
 }
 
-.popup {
+.wrapper {
     position: fixed;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 70%;
-    height: fit-content;
-    padding: 3em;
-    background-color: white;
+    width: 80%;
+    height: 80%;
+    background-color: var(--background-color);
     z-index: 101;
     border-radius: 1em;
     box-shadow: #555 2px 2px 10px;
 }
 
-.popup > h3:first-of-type {
+.popup {
+    overflow: scroll;
+    height: inherit;
+    padding: 3em;
+}
+
+.popupContent {
+    height: fit-content;
+}
+
+.popupContent > h3:first-of-type {
     margin-top: 0;
 }
 
@@ -31,7 +40,7 @@
     margin-top: 2em;
 }
 
-.popup p {
+.popup p, h3{
     text-align: justify;
 }
 

@@ -161,6 +161,11 @@ export const GcodeViewer = ({loadedGcode, transformedGcode, previewTime, setPrev
             let currentR : number | undefined = undefined;
             let lastX = 0;
             let lastY = 0;
+            let lineColor = "black"
+            if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                lineColor = "white"
+            }
+
 
             gcode.split("\n").forEach((line) => {
                 const args = line.split(" ")
@@ -181,7 +186,7 @@ export const GcodeViewer = ({loadedGcode, transformedGcode, previewTime, setPrev
                     case "G01":
                     case "G1":
                         context.setLineDash([])
-                        context.strokeStyle = "black";
+                        context.strokeStyle = lineColor;
 
                         currentX = extractAxis(args, 'X', currentX)!
                         currentY = extractAxis(args, 'Y', currentY)!
@@ -191,7 +196,7 @@ export const GcodeViewer = ({loadedGcode, transformedGcode, previewTime, setPrev
                     case "G02":
                     case "G2":
                         context.setLineDash([])
-                        context.strokeStyle = "black";
+                        context.strokeStyle = lineColor;
 
                         currentX = extractAxis(args, 'X', currentX)!
                         currentY = extractAxis(args, 'Y', currentY)!
@@ -213,7 +218,7 @@ export const GcodeViewer = ({loadedGcode, transformedGcode, previewTime, setPrev
                     case "G03":
                     case "G3":
                         context.setLineDash([])
-                        context.strokeStyle = "black";
+                        context.strokeStyle = lineColor;
 
                         currentX = extractAxis(args, 'X', currentX)!
                         currentY = extractAxis(args, 'Y', currentY)!
@@ -278,12 +283,12 @@ export const GcodeViewer = ({loadedGcode, transformedGcode, previewTime, setPrev
         }
     }
 
-    recalculateLimits(loadedGcode)
+    recalculateLimits(transformedGcode)
 
     return (
         <div className={styles.gcodeViewerPanel} style={{cursor: pathOptions.orientationAreaChangeClicked ? "pointer" : "default"}}>
             <p style={{color:'red', margin: 0}}>{error.current}</p>
-            <canvas ref={canvas} style={{height: '100%', width: '100%'}} onClick={onCanvasClick}></canvas>
+            <canvas ref={canvas} style={{height: '100%', width: '100%', aspectRatio: 1}} onClick={onCanvasClick}></canvas>
             <p className={styles.viewerCoordinatesLimits}>
                 x: {minX.current.toFixed(2)}mm .. {maxX.current.toFixed(2)}mm<br/>
                 y: {minY.current.toFixed(2)}mm .. {maxY.current.toFixed(2)}mm
