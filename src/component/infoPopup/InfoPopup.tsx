@@ -39,7 +39,7 @@ export const InfoPopup = () => {
                         </p>
                         <h3>bug reports & feature requests</h3>
                         <p>
-                            See <a href={"https:github.com"}>the github page</a>.
+                            See <a href={"https://github.com/RobinDenaux/gcode-converter-for-stained-glass-cnc-cutter"}>the github page</a>.
                         </p>
                     </div>
                 </div>

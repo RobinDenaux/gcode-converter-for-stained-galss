@@ -1,6 +1,7 @@
 # What is this tool ?
 This tool is designed to <b>adapt gcode files for a CNC with a glass cutting wheel</b> where the wheel is off axis and cannot make sharp angles.<br/>
-A small area is sacrificed to allow the wheel to rotate between cuts.
+A small area is sacrificed to allow the wheel to rotate between cuts.<br/>
+You can <b>try</b> the project <a href="https://robicopstudio.fr/gcodeToolApp/">there.</a>
 
 # The intended workflow
 - Draw your pattern in inkscape.<br/>
