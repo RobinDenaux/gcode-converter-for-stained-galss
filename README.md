@@ -1,30 +1,20 @@
-# React + TypeScript + Vite
+# What is this tool ?
+This tool is designed to <b>adapt gcode files for a CNC with a glass cutting wheel</b> where the wheel is off axis and cannot make sharp angles.<br/>
+A small area is sacrificed to allow the wheel to rotate between cuts.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+# The intended workflow
+- Draw your pattern in inkscape.<br/>
+- Use pathOps extension to remove overlapping paths.<br/>
+- You may want to use Path &gt; Inset to create a small gap between the pieces.<br/>
+- Export the selected pieces using the GcodeTools extension.<br/>
+- Drop the generated file into this tool.<br/>
 
-Currently, two official plugins are available:
+# Getting started
+Drag and drop a gcode file into the tool (a .ngc file if using inkscape). The tool will then transform the gcode and display the result.<br/>
+If you drop multiple files, they'll all be transformed with the current settings and saved directly.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+# Privacy
+This tool works offline, in your browser. <b>Your files are not uploaded</b> to a server. There is no tracking, no cookies.
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
-
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
-```
-
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+# License
+This code is distributed under the MIT license.
