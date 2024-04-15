@@ -33,7 +33,7 @@ export class Line implements PathElement {
         else if(this.startPoint.isDown !== this.endPoint.isDown) {
             feedrate = 200
         }
-        return `${this.type} X${this.endPoint.x} Y${this.endPoint.y} Z${this.endPoint.isDown ? pathOptions.cutZDepth : pathOptions.moveZDepth} F${feedrate}`;
+        return `${this.type} X${this.endPoint.x.toFixed(5)} Y${this.endPoint.y.toFixed(5)} Z${this.endPoint.isDown ? pathOptions.cutZDepth : pathOptions.moveZDepth} F${feedrate}`;
     }
 
     createReversePathElement(): PathElement {

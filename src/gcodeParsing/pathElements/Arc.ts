@@ -35,7 +35,7 @@ export class Arc implements PathElement {
     }
 
     toString(pathOptions : PathOptions): string {
-        return `${this.type} X${this.endPoint.x} Y${this.endPoint.y} I${this.center.x - this.startPoint.x} J${this.center.y - this.startPoint.y} F${pathOptions.feedrate}`
+        return `${this.type} X${this.endPoint.x.toFixed(5)} Y${this.endPoint.y.toFixed(5)} I${(this.center.x - this.startPoint.x).toFixed(5)} J${(this.center.y - this.startPoint.y).toFixed(5)} F${pathOptions.feedrate}`
     }
 
     createReversePathElement(): PathElement {

@@ -59,8 +59,9 @@ export const TransformationParametersMenu = ({setLoadedGcode, loadedFileName, tr
     }
 
     const transformGcode = (gcode : string) : string => {
-        const parsedGcode = parser.parseGcode(gcode, pathOptions).toString(pathOptions) + "G00 Z30\n" +
-            "G00 X0 Y0\n" +
+        const parsedGcode = parser.parseGcode(gcode, pathOptions).toString(pathOptions) + "\n" +
+            "G01 Z20 F200\n" +
+            "G00 X0 Y0 F1000\n" +
             "M2\n"
         console.log({"Parsed gcode" :parsedGcode.toString()})
         return parsedGcode

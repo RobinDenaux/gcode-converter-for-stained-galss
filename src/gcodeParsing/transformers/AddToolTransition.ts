@@ -7,8 +7,9 @@ import {Arc} from "../pathElements/Arc.ts";
 
 export class AddToolTransition implements Transformer {
 
-    toolOrientationChangeAreaPosition = new Point(2.5, 2.5, true);
+    toolOrientationChangeAreaPosition = new Point(5, 5, true);
     private _angularLimit = Math.PI / 8
+    private _toolRotationRadius = 5
     public set angularLimit(value : number) {
         this._angularLimit = value / 180 * Math.PI;
     }
@@ -67,14 +68,14 @@ export class AddToolTransition implements Transformer {
                         lastAngle -= 2 * Math.PI;
                     }
                 }
-                const lastAngleRotationPoint = new Point(this.toolOrientationChangeAreaPosition.x + Math.cos(lastAngle-Math.PI/2) * 2.5,
-                    this.toolOrientationChangeAreaPosition.y + Math.sin(lastAngle-Math.PI/2) * 2.5, false);
+                const lastAngleRotationPoint = new Point(this.toolOrientationChangeAreaPosition.x + Math.cos(lastAngle-Math.PI/2) * this._toolRotationRadius,
+                    this.toolOrientationChangeAreaPosition.y + Math.sin(lastAngle-Math.PI/2) * this._toolRotationRadius, false);
                 const lastAngleRotationPointDown = Point.fromPoint(lastAngleRotationPoint, true)
                 const goToStart = new Line("G00", lastPosition, lastAngleRotationPoint);
                 const goToStartDown = new Line("G01", lastAngleRotationPoint, lastAngleRotationPointDown);
 
-                const currentAngleRotationPoint = new Point(this.toolOrientationChangeAreaPosition.x + Math.cos(pathStartingAngle-Math.PI/2) * 2.5,
-                    this.toolOrientationChangeAreaPosition.y + Math.sin(pathStartingAngle-Math.PI/2) * 2.5, false);
+                const currentAngleRotationPoint = new Point(this.toolOrientationChangeAreaPosition.x + Math.cos(pathStartingAngle+Math.PI/16-Math.PI/2) * this._toolRotationRadius,
+                    this.toolOrientationChangeAreaPosition.y + Math.sin(pathStartingAngle+Math.PI/16-Math.PI/2) * this._toolRotationRadius, false);
                 const currentAngleRotationPointDown = Point.fromPoint(currentAngleRotationPoint, true);
                 const makeRotation = new Arc("G03", lastAngleRotationPoint, currentAngleRotationPointDown, new Point(this.toolOrientationChangeAreaPosition.x, this.toolOrientationChangeAreaPosition.y, true));
                 const goToEndUp = new Line("G01", currentAngleRotationPointDown, currentAngleRotationPoint);

@@ -33,7 +33,7 @@ export const GcodeEditor = () => {
     [pathOptions.cutZDepth, pathOptions.setCutZDepth] = useState(0);
     [pathOptions.angularPathLimit, pathOptions.setAngularPathLimit] = useState(15);
     [pathOptions.orientationAreaChangeClicked, pathOptions.setOrientationAreaChangeClicked] = useState(false);
-    [pathOptions.orientationAreaPosition, pathOptions.setOrientationAreaPosition] = useState(new Point(2.5, 2.5, true));
+    [pathOptions.orientationAreaPosition, pathOptions.setOrientationAreaPosition] = useState(new Point(5, 5, true));
 
     function dropHandler(ev : React.DragEvent<HTMLDivElement>) {
         ev.preventDefault();
