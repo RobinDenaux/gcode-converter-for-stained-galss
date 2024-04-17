@@ -11,4 +11,5 @@ module.exports = {
     moduleFileExtensions: ['js', 'json', 'ts'],
     testRegex: '.*\\.test\\.ts$',
     collectCoverageFrom: ['**/*.(t|j)s'],
+    modulePathIgnorePatterns: ['<rootDir>/dist/'],
 };
